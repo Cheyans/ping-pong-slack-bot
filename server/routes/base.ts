@@ -1,14 +1,12 @@
-import {IRouterMatcher} from "express";
-export abstract class Route<T> {
-  private url: string;
-  private routes: routeFunctions<T>;
+import {Router} from "express";
+const PromiseRouter = require("express-promise-router");
 
-  constructor(url: string, routes: routeFunctions<T>) {
-    this.url = url;
-    this.routes = routes;
+export abstract class BaseRoute {
+  private route: string;
+  public router: Router;
+
+  constructor(route: string) {
+    this.route = route;
+    this.router = PromiseRouter();
   }
-}
-
-interface routeFunctions<T> {
-  [index: string]: IRouterMatcher<T>
 }

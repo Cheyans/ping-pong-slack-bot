@@ -1,0 +1,16 @@
+FROM node:8.1.2
+
+RUN npm install -g yarn
+RUN yarn global add nodemon
+
+COPY ./package.json /src/package.json
+COPY ./yarn.lock /src/yarn.lock
+COPY ./tsconfig.json /src/tsconfig.json
+
+RUN cd /src && yarn install
+
+COPY . /src
+
+WORKDIR /src
+
+CMD ["nodemon", "-L", "-e", "ts,sql", "run", "start-dev"]

@@ -2,19 +2,21 @@ import * as express from "express";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 
-const logger = require("../libs/logger");
-import {errorHandler} from "../errors/middleware";
-import {errorLogger, requestLogger} from "../libs/logger";
+const logger = require("./libs/logger");
+import {errorHandler} from "./errors/middleware";
+import {errorLogger, requestLogger} from "./libs/logger";
+import {AppLocals} from "./locals/appLocals";
 
 export class App {
   private app: express.Application;
+  private settings: Settings;
 
-  constructor(port: number) {
+  constructor(settings: Settings) {
     this.app = express();
+    this.settings = settings;
 
-    this.assignSettings({
-      port
-    });
+    this.assignSettings();
+    this.initializeAppLocals();
     this.registerMiddleware();
     this.registerRoutes();
     this.registerErrorHandlers();
@@ -24,8 +26,12 @@ export class App {
     return this.app;
   }
 
-  private assignSettings(settings: Settings) {
-    this.app.set('port', settings.port);
+  private assignSettings() {
+    this.app.set('port', this.settings.port);
+  }
+
+  private initializeAppLocals() {
+    this.app.locals = new AppLocals(this.settings)
   }
 
   private registerMiddleware() {
@@ -44,8 +50,10 @@ export class App {
     this.app.use(errorLogger);
     this.app.use(errorHandler);
   }
+
 }
 
-interface Settings {
+export interface Settings {
   port: number
+  slackToken: string
 }

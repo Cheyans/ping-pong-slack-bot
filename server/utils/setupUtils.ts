@@ -2,7 +2,7 @@ import {logger} from "../libs/logger";
 import {Server} from "http";
 import {InvalidPortError} from "../errors/internalErrors/invalidPortException";
 
-export function normalizePort(val: any): number {
+export function normalizePort(val: any = 3000): number {
   let port: number;
 
   switch(typeof val) {
@@ -17,7 +17,6 @@ export function normalizePort(val: any): number {
       port = val;
       if (port < 0) {
         throw new InvalidPortError(val);
-
       }
       break;
     }
