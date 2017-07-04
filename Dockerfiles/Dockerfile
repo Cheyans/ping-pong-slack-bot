@@ -7,6 +7,7 @@ WORKDIR /src
 RUN npm install -g yarn
 RUN yarn install
 
+RUN ls ./typings ./
 RUN yarn run build
 
 CMD ["yarn", "start"]

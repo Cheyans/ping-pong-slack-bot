@@ -1,4 +1,4 @@
-import {AppLocals} from "../../locals/appLocals";
+import {AppLocals} from "../../server/locals/appLocals";
 import {Request as BaseRequest} from "express-serve-static-core";
 
 declare module "express" {
