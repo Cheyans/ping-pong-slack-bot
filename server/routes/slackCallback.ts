@@ -5,9 +5,10 @@ import {Player} from "../models/player";
 export class SlackCallback extends BaseRoute {
   constructor() {
     super("slack-callback");
+    this.router.post("/join", this.joinPong);
   }
 
-  public joinPong(req: Request, res: Response, next: NextFunction) {
+  private joinPong(req: Request, res: Response, next: NextFunction) {
     const {token, team_id, user_id, user_name} = req.body;
     const players = res.app.locals.players;
 
