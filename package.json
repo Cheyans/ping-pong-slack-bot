@@ -1,7 +1,8 @@
 {
   "scripts": {
     "build": "tsc",
-    "start-dev": "ts-node --inspect=localhost:9229 server/entryPoint"
+    "start-dev": "ts-node --inspect=localhost:9229 server/entryPoint",
+    "start-dev-brk": "ts-node --inspect-brk=localhost:9229 server/entryPoint"
   },
   "dependencies": {
     "@slack/client": "^3.10.0",

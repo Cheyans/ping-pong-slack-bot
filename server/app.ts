@@ -15,12 +15,9 @@ export class App {
     this.app = express();
     this.settings = settings;
 
-
     this.assignSettings();
     this.initializeAppLocals();
-    this.registerMiddleware();
-    this.registerRoutes();
-    this.registerErrorHandlers();
+    this.initializeStack();
   }
 
   public get expressServer(): express.Application {
@@ -35,24 +32,20 @@ export class App {
     this.app.locals = new AppLocals(this.settings)
   }
 
-  private registerMiddleware() {
+  private initializeStack() {
+    // PRE-REQUEST MIDDLEWARE
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({extended: false}));
     this.app.use(cookieParser());
     this.app.use(requestLogger);
 
-  }
-
-  private registerRoutes() {
+    // ROUTES
     this.app.use(SlackCallbackRoute.route, new SlackCallbackRoute().router);
-    // logger.info(this.app._router.stack)
-  }
 
-  private registerErrorHandlers() {
+    // PRE-RESPONSE MIDDLEWARE
     this.app.use(errorLogger);
     this.app.use(errorHandler);
   }
-
 }
 
 export interface Settings {
