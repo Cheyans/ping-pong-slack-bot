@@ -1,7 +1,6 @@
 FROM node:8.1.2
 
 RUN npm install -g yarn
-RUN yarn global add nodemon
 
 COPY ./package.json /src/package.json
 COPY ./yarn.lock /src/yarn.lock
@@ -13,4 +12,4 @@ COPY . /src
 
 WORKDIR /src
 
-CMD ["nodemon", "-L", "-e", "ts,sql", "run", "start-dev"]
+CMD ["./node_modules/.bin/nodemon", "--watch", "server,typings", "-L", "-e", "ts,sql", "-x", "npm", "run", "start-dev"]

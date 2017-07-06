@@ -2,10 +2,10 @@ import * as express from "express";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 
-const logger = require("./libs/logger");
 import {errorHandler} from "./errors/middleware";
-import {errorLogger, requestLogger} from "./libs/logger";
+import {errorLogger, logger, requestLogger} from "./libs/logger";
 import {AppLocals} from "./locals/appLocals";
+import {SlackCallbackRoute} from "./routes/slackCallback";
 
 export class App {
   private app: express.Application;
@@ -14,6 +14,7 @@ export class App {
   constructor(settings: Settings) {
     this.app = express();
     this.settings = settings;
+
 
     this.assignSettings();
     this.initializeAppLocals();
@@ -43,7 +44,8 @@ export class App {
   }
 
   private registerRoutes() {
-
+    this.app.use(SlackCallbackRoute.route, new SlackCallbackRoute().router);
+    // logger.info(this.app._router.stack)
   }
 
   private registerErrorHandlers() {

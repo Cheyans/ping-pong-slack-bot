@@ -1,10 +1,12 @@
-import {BaseRoute} from "./base";
+import {BaseRouteInstance, BaseRouteStatic} from "./base";
 import {Request, NextFunction, Response} from "express";
 import {Player} from "../models/player";
 
-export class SlackCallback extends BaseRoute {
+export const SlackCallbackRoute: BaseRouteStatic = class extends BaseRouteInstance {
+  public static route = "slack-callback";
+
   constructor() {
-    super("slack-callback");
+    super();
     this.router.post("/join", this.joinPong);
   }
 
@@ -25,4 +27,4 @@ export class SlackCallback extends BaseRoute {
       text: "yes"
     });
   }
-}
+};
