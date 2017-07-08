@@ -12,10 +12,12 @@ export const SlackCallbackRoute: BaseRouteStatic = class extends BaseRouteInstan
     this.router.post("/join", this.joinPong);
   }
 
-  private joinPong(req: Request, res: Response, next: NextFunction) {
+  private async joinPong(req: Request, res: Response, next: NextFunction) {
     const {token, team_id, user_id, user_name} = req.body;
     const locals = res.app.locals;
     const players = locals.players;
+    const slackRtmClient = locals.slackRtmClient;
+    const slackWebClient = locals.slackWebClient;
 
     if (!token || !team_id || !user_id || !user_name) {
       logger.error(`Missing parameter:
@@ -39,10 +41,12 @@ export const SlackCallbackRoute: BaseRouteStatic = class extends BaseRouteInstan
     players.set(user_id, new Player(user_id, user_name));
 
     try {
-      locals.slackBotClient.sendMessage(`@${user_name}`, "#subsubpar-ping-pong").then(() => {
+      const pingPongChannelId = await slackWebClient.getSubSubParPingPongChannelId();
+      slackRtmClient.sendMessage(`@${user_name}`, pingPongChannelId).then(() => {
         logger.info(`${user_name} has registered`);
       });
     } catch (e) {
+      logger.error(e);
       return res.send({
         text: Messages.SOMETHING_WENT_WRONG
       });
