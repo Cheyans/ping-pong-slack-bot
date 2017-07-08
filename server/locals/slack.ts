@@ -1,35 +1,20 @@
-import {ChannelsListResult, CLIENT_EVENTS, RtmClient, WebClient} from "@slack/client";
+import {CLIENT_EVENTS, RtmClient, WebClient} from "@slack/client";
 import {logger} from "../libs/logger";
-import {Channels} from "../enums/channels";
+import {ChannelName} from "../enums/channels";
 
 export class SlackWebClient extends WebClient {
-  pingPongChannelId: string;
-  subParPingPongChannelId: string;
-  subSubParPingPongChannelId: string;
   channelNamesToIds: Map<string, string> = new Map();
 
-  public async getPingPongChannelId() {
-    if (!this.pingPongChannelId) {
+  public async getChannelId(channel: ChannelName) {
+    if (!this.channelNamesToIds.has(channel)) {
       await this.updateChannelNamesToIds();
     }
-
-    return this.channelNamesToIds.get(Channels.PING_PONG);
-  }
-
-  public async getSubParPingPongChannelId() {
-    if (!this.subParPingPongChannelId) {
-      await this.updateChannelNamesToIds();
+    const channelId = this.channelNamesToIds.get(channel);
+    if (!channelId) {
+      throw new Error(`Could not find ${channel} channel id`);
     }
 
-    return this.channelNamesToIds.get(Channels.SUBPAR_PING_PONG);
-  }
-
-  public async getSubSubParPingPongChannelId() {
-    if (!this.subSubParPingPongChannelId) {
-      await this.updateChannelNamesToIds();
-    }
-
-    return this.channelNamesToIds.get(Channels.SUBSUBPAR_PING_PONG);
+    return channelId;
   }
 
   private async updateChannelNamesToIds() {
@@ -41,13 +26,32 @@ export class SlackWebClient extends WebClient {
 }
 
 export class SlackRtmClient extends RtmClient {
-  constructor(token: string) {
+  private webClient: SlackWebClient;
+
+  constructor(token: string, webClient: SlackWebClient) {
     super(token);
+    this.webClient = webClient;
 
     this.on(CLIENT_EVENTS.RTM.WS_ERROR, SlackRtmClient.connectionError);
     this.on(CLIENT_EVENTS.RTM.UNABLE_TO_RTM_START, SlackRtmClient.connectionError);
     this.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, SlackRtmClient.connectionSuccesfull);
     this.on(CLIENT_EVENTS.RTM.ATTEMPTING_RECONNECT, SlackRtmClient.attemptingReconnect)
+  }
+
+  public startAutomaticReconnect() {
+    setTimeout(() => {
+      if (this.connected) {
+        this.startAutomaticReconnect();
+      } else {
+        logger.warn("RTM client disconnected");
+        this.reconnect();
+      }
+    }, 30 * 1000);
+  }
+
+  public async inviteToChannel(userName: string, channel: ChannelName) {
+    const channelId = await this.webClient.getChannelId(channel);
+    this.sendMessage(userName, channelId);
   }
 
   private static connectionError(error: Error) {
@@ -62,14 +66,4 @@ export class SlackRtmClient extends RtmClient {
     logger.info("RTM Client attempting reconnect");
   }
 
-  public startAutomaticReconnect() {
-    setTimeout(() => {
-      if (this.connected) {
-        this.startAutomaticReconnect();
-      } else {
-        logger.warn("RTM client disconnected");
-        this.reconnect();
-      }
-    }, 30 * 1000);
-  }
 }

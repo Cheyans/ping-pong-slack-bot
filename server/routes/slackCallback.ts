@@ -3,6 +3,7 @@ import {Request, NextFunction, Response} from "express";
 import {Player} from "../models/player";
 import {logger} from "../libs/logger";
 import {Messages} from "../enums/messages";
+import {ChannelName} from "../enums/channels";
 
 export const SlackCallbackRoute: BaseRouteStatic = class extends BaseRouteInstance {
   public static route = "/slack-callback";
@@ -41,9 +42,8 @@ export const SlackCallbackRoute: BaseRouteStatic = class extends BaseRouteInstan
     players.set(user_id, new Player(user_id, user_name));
 
     try {
-      const pingPongChannelId = await slackWebClient.getSubSubParPingPongChannelId();
-      slackRtmClient.sendMessage(`@${user_name}`, pingPongChannelId).then(() => {
-        logger.info(`${user_name} has registered`);
+      slackRtmClient.inviteToChannel(user_name, ChannelName.SUBSUBPAR_PING_PONG).then(() => {
+
       });
     } catch (e) {
       logger.error(e);
