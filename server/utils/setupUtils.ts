@@ -1,6 +1,6 @@
 import {logger} from "../libs/logger";
 import {Server} from "http";
-import {InvalidPortError} from "../errors/internalErrors/invalidPortException";
+import {InvalidPortError} from "../errors/internalErrors/invalidPort";
 
 export function normalizePort(val: any = 3000): number {
   let port: number;

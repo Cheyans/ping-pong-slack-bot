@@ -1,4 +1,5 @@
 {
+  "license": "GPL v3",
   "scripts": {
     "build": "tsc",
     "start": "node dist/entryPoint",

@@ -1,32 +1,40 @@
-import {CLIENT_EVENTS, RtmClient, WebClient} from "@slack/client";
+import {CLIENT_EVENTS, PartialChannelResult, RtmClient, WebClient} from "@slack/client";
 import {logger} from "../libs/logger";
 import {ChannelName} from "../enums/channels";
 import {formatPingUserString} from "../utils/slack";
+import {UnknownChannel} from "../errors/internalErrors/unknownChannel";
 
 export class SlackWebClient extends WebClient {
-  channelNamesToIds: Map<string, string> = new Map();
+  channelNamesToInfo: Map<string, PartialChannelResult> = new Map();
 
-  public async getChannelId(channelName: ChannelName) {
-    if (!this.channelNamesToIds.has(channelName)) {
-      await this.updateChannelNamesToIds();
+  public async getChannelInfo(channelName: ChannelName) {
+    if (!this.channelNamesToInfo.has(channelName)) {
+      await this.updateChannelNamesToInfo();
     }
-    const channelId = this.channelNamesToIds.get(channelName);
-    if (!channelId) {
-      throw new Error(`Could not find ${channelName} channel id`);
+    const channel = this.channelNamesToInfo.get(channelName);
+    if (!channel) {
+      throw new UnknownChannel(channelName)
     }
 
-    return channelId;
+    return channel;
   }
 
-  private async updateChannelNamesToIds() {
-    const channelList = await this.channels.list();
-    const groupList = await this.groups.list();
+  public async isUserInChannel(userId: string, channelName: ChannelName) {
+    const channel = await this.getChannelInfo(channelName);
+    return channel.members.includes(userId)
+  }
+
+  private async updateChannelNamesToInfo() {
+    const [channelList, groupList] = await Promise.all([
+      this.channels.list(),
+      this.groups.list()
+    ]);
 
     groupList.groups.forEach(group => {
-      this.channelNamesToIds.set(group.name, group.id);
+      this.channelNamesToInfo.set(group.name, group);
     });
     channelList.channels.forEach(channel => {
-      this.channelNamesToIds.set(channel.name, channel.id);
+      this.channelNamesToInfo.set(channel.name, channel);
     });
   }
 }
@@ -56,8 +64,8 @@ export class SlackRtmClient extends RtmClient {
   }
 
   public async inviteToChannel(userId: string, userName: string, channelName: ChannelName) {
-    const channelId = await this.webClient.getChannelId(channelName);
-    this.sendMessage(formatPingUserString(userId, userName), channelId);
+    const channel = await this.webClient.getChannelInfo(channelName);
+    this.sendMessage(formatPingUserString(userId, userName), channel.id);
   }
 
   private static connectionError(error: Error) {
