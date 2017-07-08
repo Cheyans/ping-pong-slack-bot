@@ -3,7 +3,7 @@ import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 
 import {errorHandler} from "./errors/middleware";
-import {errorLogger, logger, requestLogger} from "./libs/logger";
+import {errorLogger, requestLogger} from "./libs/logger";
 import {AppLocals} from "./locals/appLocals";
 import {SlackCallbackRoute} from "./routes/slackCallback";
 import {Environment} from "./enums/environments";
@@ -17,8 +17,8 @@ export class App {
     this.settings = settings;
 
     this.assignSettings();
-    this.initializeAppLocals();
-    this.initializeStack();
+    this.initializeAppLocals().then();
+    this.initializeRequestStack();
   }
 
   public get expressServer(): express.Application {
@@ -33,7 +33,7 @@ export class App {
     this.app.locals = new AppLocals(this.settings);
   }
 
-  private initializeStack() {
+  private initializeRequestStack() {
     // PRE-REQUEST MIDDLEWARE
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({extended: false}));
@@ -55,4 +55,5 @@ export interface Settings {
   slackCommandAccessToken: string
   slackBotAccessToken: string
   slackVerificationToken: string
+  ownerName: string
 }

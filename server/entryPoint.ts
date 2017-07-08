@@ -16,7 +16,8 @@ function startApp() {
     port: normalizePort(process.env.PORT),
     slackCommandAccessToken: process.env.SLACK_COMMAND_ACCESS_TOKEN || "",
     slackBotAccessToken: process.env.SLACK_BOT_ACCESS_TOKEN || "",
-    slackVerificationToken: process.env.SLACK_VERIFICATION_TOKEN || ""
+    slackVerificationToken: process.env.SLACK_VERIFICATION_TOKEN || "",
+    ownerName: process.env.OWNER_NAME || ""
   };
 
   const app = new App(settings);

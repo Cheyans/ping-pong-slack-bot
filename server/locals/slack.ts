@@ -5,6 +5,12 @@ import {formatPingUserString} from "../utils/slack";
 import {UnknownChannel} from "../errors/internalErrors/unknownChannel";
 
 export class SlackWebClient extends WebClient {
+  private ownerName: string;
+
+  constructor(token: string, ownerName: string) {
+    super(token);
+    this.ownerName = ownerName;
+  }
   channelNamesToInfo: Map<string, PartialChannelResult> = new Map();
 
   public async getChannelInfo(channelName: ChannelName) {
@@ -41,9 +47,11 @@ export class SlackWebClient extends WebClient {
 
 export class SlackRtmClient extends RtmClient {
   private webClient: SlackWebClient;
+  private ownerName: string;
 
-  constructor(token: string, webClient: SlackWebClient) {
+  constructor(token: string, ownerName: string, webClient: SlackWebClient) {
     super(token);
+    this.ownerName = ownerName;
     this.webClient = webClient;
 
     this.on(CLIENT_EVENTS.RTM.WS_ERROR, SlackRtmClient.connectionError);

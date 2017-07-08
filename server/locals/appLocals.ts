@@ -16,8 +16,8 @@ export class AppLocals {
   }
 
   initializeSlack() {
-    this.slackWebClient = new SlackWebClient(this.settings.slackCommandAccessToken);
-    this.slackRtmClient = new SlackRtmClient(this.settings.slackBotAccessToken, this.slackWebClient);
+    this.slackWebClient = new SlackWebClient(this.settings.slackCommandAccessToken, this.settings.ownerName);
+    this.slackRtmClient = new SlackRtmClient(this.settings.slackBotAccessToken, this.settings.ownerName, this.slackWebClient);
     this.slackRtmClient.start();
     this.slackRtmClient.startAutomaticReconnect();
   }
