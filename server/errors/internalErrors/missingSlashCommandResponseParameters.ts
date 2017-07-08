@@ -1,4 +1,6 @@
-export class MissingSlashCommandResponseParameters extends Error {
+import {InternalBaseError} from "./internalBaseError";
+
+export class MissingSlashCommandResponseParameters extends InternalBaseError {
   constructor(body: any){
     super(`Missing parameter:
   token:${body.token}

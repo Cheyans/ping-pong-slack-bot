@@ -1,16 +1,11 @@
 import {Request, Response, NextFunction} from "express";
+import {Messages} from "../enums/messages";
+import {BaseError} from "./baseError";
 
-export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
-  const status = err.status ? err.status : 500;
-  let response: any;
-  if (status >= 500) {
-    response = {error: "Something went wrong"};
+export function errorHandler(err: BaseError | Error, req: Request, res: Response, next: NextFunction) {
+  if (err instanceof BaseError) {
+    res.status(err.status).send({text: err.message});
   } else {
-    response = {error: err.message};
-    if (err.data) {
-      response.errors = err.data;
-    }
+    res.status(500).send({text: Messages.SOMETHING_WENT_WRONG});
   }
-
-  res.status(status).json(response);
 }

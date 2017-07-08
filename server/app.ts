@@ -55,5 +55,6 @@ export interface Settings {
   slackCommandAccessToken: string
   slackBotAccessToken: string
   slackVerificationToken: string
-  ownerName: string
+  slackTeamId: string
+  slackAppOwnerUsername: string
 }

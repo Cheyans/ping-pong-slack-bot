@@ -1,4 +1,6 @@
-class ResponseError extends Error {
+import {BaseError} from "../baseError";
+
+class ResponseBaseError extends BaseError {
   public readonly status: number;
   public readonly data: any;
   constructor(message: string, status: number, data=null) {

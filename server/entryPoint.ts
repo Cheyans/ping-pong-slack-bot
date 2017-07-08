@@ -17,7 +17,8 @@ function startApp() {
     slackCommandAccessToken: process.env.SLACK_COMMAND_ACCESS_TOKEN || "",
     slackBotAccessToken: process.env.SLACK_BOT_ACCESS_TOKEN || "",
     slackVerificationToken: process.env.SLACK_VERIFICATION_TOKEN || "",
-    ownerName: process.env.OWNER_NAME || ""
+    slackTeamId: process.env.SLACK_TEAM_ID || "",
+    slackAppOwnerUsername: process.env.SLACK_APP_OWNER_USERNAME || ""
   };
 
   const app = new App(settings);

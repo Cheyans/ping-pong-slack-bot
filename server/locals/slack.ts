@@ -5,13 +5,7 @@ import {formatPingUserString} from "../utils/slack";
 import {UnknownChannel} from "../errors/internalErrors/unknownChannel";
 
 export class SlackWebClient extends WebClient {
-  private ownerName: string;
-
-  constructor(token: string, ownerName: string) {
-    super(token);
-    this.ownerName = ownerName;
-  }
-  channelNamesToInfo: Map<string, PartialChannelResult> = new Map();
+  private channelNamesToInfo: Map<string, PartialChannelResult> = new Map();
 
   public async getChannelInfo(channelName: ChannelName) {
     if (!this.channelNamesToInfo.has(channelName)) {
@@ -47,16 +41,14 @@ export class SlackWebClient extends WebClient {
 
 export class SlackRtmClient extends RtmClient {
   private webClient: SlackWebClient;
-  private ownerName: string;
 
-  constructor(token: string, ownerName: string, webClient: SlackWebClient) {
+  constructor(token: string, webClient: SlackWebClient) {
     super(token);
-    this.ownerName = ownerName;
     this.webClient = webClient;
 
     this.on(CLIENT_EVENTS.RTM.WS_ERROR, SlackRtmClient.connectionError);
     this.on(CLIENT_EVENTS.RTM.UNABLE_TO_RTM_START, SlackRtmClient.connectionError);
-    this.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, SlackRtmClient.connectionSuccesfull);
+    this.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, SlackRtmClient.connectionSuccessful);
     this.on(CLIENT_EVENTS.RTM.ATTEMPTING_RECONNECT, SlackRtmClient.attemptingReconnect);
     this.on(CLIENT_EVENTS.RTM.DISCONNECT, SlackRtmClient.disconnected);
   }
@@ -80,7 +72,7 @@ export class SlackRtmClient extends RtmClient {
     throw error;
   }
 
-  private static connectionSuccesfull() {
+  private static connectionSuccessful() {
     logger.info("RTM Client successfully connected");
   }
 
@@ -93,5 +85,4 @@ export class SlackRtmClient extends RtmClient {
     logger.warn(`Error Code: ${errorCode}`);
     logger.warn(error.message);
   }
-
 }

@@ -1,10 +1,10 @@
 import {BaseRouteInstance, BaseRouteStatic} from "./base";
 import {Request, NextFunction, Response} from "express";
 import {Player} from "../models/player";
-import {logger} from "../libs/logger";
 import {Messages} from "../enums/messages";
 import {ChannelName} from "../enums/channels";
 import {MissingSlashCommandResponseParameters} from "../errors/internalErrors/missingSlashCommandResponseParameters";
+import {AppLocals} from "../locals/appLocals";
 
 export const SlackCallbackRoute: BaseRouteStatic = class extends BaseRouteInstance {
   public static route = "/slack-callback";
@@ -16,45 +16,37 @@ export const SlackCallbackRoute: BaseRouteStatic = class extends BaseRouteInstan
 
   private async joinPong(req: Request, res: Response, next: NextFunction) {
     const {token, team_id, user_id, user_name} = req.body;
-    const locals = res.app.locals;
+    const locals: AppLocals = res.app.locals;
     const players = locals.players;
     const slackRtmClient = locals.slackRtmClient;
     const slackWebClient = locals.slackWebClient;
+    let registered: boolean;
 
     if (!token || !team_id || !user_id || !user_name) {
-      res.send({
-        text: Messages.SOMETHING_WENT_WRONG
-      });
       throw new MissingSlashCommandResponseParameters(req.body);
     }
 
-    if (players.has(user_id)) {
-      if (!slackWebClient.isUserInChannel(user_id, ChannelName.SUBSUBPAR_PING_PONG)) {
-        try {
-          slackRtmClient.inviteToChannel(user_id, user_name, ChannelName.SUBSUBPAR_PING_PONG).then(() => {
-          });
-        } catch (e) {
-          logger.error(e);
-        }
-      }
+    if (token !== locals.settings.slackVerificationToken || team_id !== locals.settings.slackTeamId) {
+      return res.sendStatus(401);
+    }
+
+    registered = players.has(user_id);
+    if (!registered) {
+      players.set(user_id, new Player(user_id, user_name));
+    }
+
+    if (!slackWebClient.isUserInChannel(user_id, ChannelName.PING_PONG)) {
+      slackRtmClient.inviteToChannel(user_id, user_name, ChannelName.PING_PONG).then();
+    }
+
+    if (!registered) {
+      return res.send({
+        text: Messages.WELCOME
+      });
+    } else {
       return res.send({
         text: Messages.ALREADY_REGISTERED
-      });
+      })
     }
-
-    players.set(user_id, new Player(user_id, user_name));
-
-    try {
-      slackRtmClient.inviteToChannel(user_id, user_name, ChannelName.SUBSUBPAR_PING_PONG).then(() => {
-
-      });
-    } catch (e) {
-      logger.error(e);
-      return res.send({
-        text: Messages.SOMETHING_WENT_WRONG
-      });
-    }
-
-    res.sendStatus(200);
   }
 };
