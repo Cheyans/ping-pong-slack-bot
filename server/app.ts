@@ -6,6 +6,7 @@ import {errorHandler} from "./errors/middleware";
 import {errorLogger, logger, requestLogger} from "./libs/logger";
 import {AppLocals} from "./locals/appLocals";
 import {SlackCallbackRoute} from "./routes/slackCallback";
+import {Environment} from "./enums/environments";
 
 export class App {
   private app: express.Application;
@@ -28,8 +29,9 @@ export class App {
     this.app.set('port', this.settings.port);
   }
 
-  private initializeAppLocals() {
-    this.app.locals = new AppLocals(this.settings)
+  private async initializeAppLocals() {
+    this.app.locals = new AppLocals(this.settings);
+    // this.app.locals.slack.joinChannels();
   }
 
   private initializeStack() {
@@ -49,6 +51,9 @@ export class App {
 }
 
 export interface Settings {
+  environment: Environment
   port: number
-  slackToken: string
+  slackCommandAccessToken: string
+  slackBotAccessToken: string
+  slackVerificationToken: string
 }
