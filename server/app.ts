@@ -31,7 +31,6 @@ export class App {
 
   private async initializeAppLocals() {
     this.app.locals = new AppLocals(this.settings);
-    // this.app.locals.slack.joinChannels();
   }
 
   private initializeStack() {
@@ -44,7 +43,7 @@ export class App {
     // ROUTES
     this.app.use(SlackCallbackRoute.route, new SlackCallbackRoute().router);
 
-    // PRE-RESPONSE MIDDLEWARE
+    // ERROR MIDDLEWARE
     this.app.use(errorLogger);
     this.app.use(errorHandler);
   }

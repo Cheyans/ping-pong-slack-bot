@@ -49,7 +49,8 @@ export class SlackRtmClient extends RtmClient {
     this.on(CLIENT_EVENTS.RTM.WS_ERROR, SlackRtmClient.connectionError);
     this.on(CLIENT_EVENTS.RTM.UNABLE_TO_RTM_START, SlackRtmClient.connectionError);
     this.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, SlackRtmClient.connectionSuccesfull);
-    this.on(CLIENT_EVENTS.RTM.ATTEMPTING_RECONNECT, SlackRtmClient.attemptingReconnect)
+    this.on(CLIENT_EVENTS.RTM.ATTEMPTING_RECONNECT, SlackRtmClient.attemptingReconnect);
+    this.on(CLIENT_EVENTS.RTM.DISCONNECT, SlackRtmClient.disconnected);
   }
 
   public startAutomaticReconnect() {
@@ -57,7 +58,6 @@ export class SlackRtmClient extends RtmClient {
       if (this.connected) {
         this.startAutomaticReconnect();
       } else {
-        logger.warn("RTM client disconnected");
         this.reconnect();
       }
     }, 30 * 1000);
@@ -78,6 +78,12 @@ export class SlackRtmClient extends RtmClient {
 
   private static attemptingReconnect() {
     logger.info("RTM Client attempting reconnect");
+  }
+
+  private static disconnected(error: Error, errorCode: number) {
+    logger.warn("RTM client disconnected");
+    logger.warn(`Error Code: ${errorCode}`);
+    logger.warn(error.message);
   }
 
 }
