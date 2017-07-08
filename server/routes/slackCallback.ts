@@ -39,7 +39,7 @@ export const SlackCallbackRoute: BaseRouteStatic = class extends BaseRouteInstan
     players.set(user_id, new Player(user_id, user_name));
 
     try {
-      locals.slackBotClient.sendMessage("#subsubpar-ping-pong", user_id).then(() => {
+      locals.slackBotClient.sendMessage(`@${user_name}`, "#subsubpar-ping-pong").then(() => {
         logger.info(`${user_name} has registered`);
       });
     } catch (e) {
