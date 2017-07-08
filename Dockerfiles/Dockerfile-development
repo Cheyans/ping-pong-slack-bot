@@ -12,4 +12,4 @@ COPY . /src
 
 WORKDIR /src
 
-CMD ["npm start watch"]
+CMD ["yarn run watch"]
