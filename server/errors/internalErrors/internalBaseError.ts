@@ -6,5 +6,5 @@ export class InternalBaseError extends BaseError {
   constructor(message: string, data=null) {
     super(message);
     this.data = data;
-  };
+  }
 }

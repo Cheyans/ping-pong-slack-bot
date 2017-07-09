@@ -29,17 +29,17 @@ export function normalizePort(val: any = 3000): number {
 }
 
 export function onError(error: NodeJS.ErrnoException, port: number | string): void {
-  if (error.syscall !== 'listen') {
+  if (error.syscall !== "listen") {
     throw error;
   }
-  const bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
+  const bind = (typeof port === "string") ? "Pipe " + port : "Port " + port.toString();
   switch (error.code) {
-    case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
+    case "EACCES":
+      logger.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
-    case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
+    case "EADDRINUSE":
+      logger.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
@@ -48,7 +48,7 @@ export function onError(error: NodeJS.ErrnoException, port: number | string): vo
 }
 
 export function onListening(server: Server): void {
-  const addr = server.address();
-  const bind = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr.port}`;
+  const address = server.address() as any;
+  const bind = (typeof address === "string") ? `pipe ${address}` : `port ${address.port}`;
   logger.info(`Listening on ${bind}`);
 }

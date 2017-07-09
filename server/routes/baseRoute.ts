@@ -7,6 +7,6 @@ export abstract class BaseRouteInstance {
 
 
 export interface BaseRouteStatic {
+  route: string;
   new (...args: any[]): BaseRouteInstance;
-  route: string
 }

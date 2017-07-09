@@ -2,9 +2,10 @@
   "license": "GPL-3.0",
   "scripts": {
     "build": "tsc",
+    "lint": "tslint -p ./ --type-check -c tslint.json \"server/**/*.ts\"",
     "start": "node dist/entryPoint",
-    "start:dev": "ts-node --inspect=localhost:9229 server/entryPoint",
-    "start:dev:brk": "ts-node --inspect-brk=localhost:9229 server/entryPoint",
+    "start:dev": "yarn run lint && ts-node --inspect=localhost:9229 server/entryPoint",
+    "start:dev:brk": "yarn run lint && ts-node --inspect-brk=localhost:9229 server/entryPoint",
     "watch": "nodemon -L -e ts,sql -x yarn run start:dev",
     "watch:brk": "nodemon -L -e ts,sql -x yarn run start:dev:brk"
   },
@@ -15,6 +16,7 @@
     "express": "^4.15.3",
     "express-promise-router": "^1.1.1",
     "express-winston": "^2.4.0",
+    "http-status-enum": "^1.0.2",
     "source-map-support": "^0.4.15",
     "ts-trueskill": "^1.4.0",
     "typescript": "^2.4.1",
@@ -29,6 +31,7 @@
     "containerized": "^1.0.2",
     "dotenv": "^4.0.0",
     "nodemon": "^1.11.0",
-    "ts-node": "^3.1.0"
+    "ts-node": "^3.1.0",
+    "tslint": "^5.5.0"
   }
 }

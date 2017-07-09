@@ -15,14 +15,14 @@ export class AppLocals {
     this.initializeGameObjects();
   }
 
-  initializeSlack() {
+  private initializeSlack() {
     this.slackWebClient = new SlackWebClient(this.settings.slackCommandAccessToken);
     this.slackRtmClient = new SlackRtmClient(this.settings.slackBotAccessToken, this.slackWebClient);
     this.slackRtmClient.start();
     this.slackRtmClient.startAutomaticReconnect();
   }
 
-  initializeGameObjects() {
+  private initializeGameObjects() {
     this.players = new PlayerStore();
   }
 }

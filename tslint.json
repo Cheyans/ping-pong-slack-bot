@@ -1,0 +1,88 @@
+{
+  "lintOptions": {
+    "typeCheck": true
+  },
+  "rules": {
+    // TS specific
+    "adjacent-overload-signatures": true,
+    "member-access": true,
+    "member-ordering": [true, {
+      "order": [
+        "static-field",
+        "instance-field",
+        "constructor",
+        "public-instance-method",
+        "protected-instance-method",
+        "private-instance-method"
+      ]
+    }],
+    "no-internal-module": true,
+    "no-magic-numbers": false,
+    "no-unnecessary-type-assertion": true,
+    "no-var-requires": false,
+    "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
+    "promise-function-async": true,
+    "unified-signatures": true,
+
+    // Functionality
+    "await-promise": true,
+    "curly": true,
+    "label-position": false,
+    "no-conditional-assignment": true,
+    "no-console": true,
+    "no-duplicate-super": true,
+    "no-empty": true,
+    "no-eval": true,
+    "no-floating-promises": true,
+    "no-for-in-array": true,
+    "no-invalid-template-strings": true,
+    "no-invalid-this": true,
+    "no-misused-new": true,
+    "no-object-literal-type-assertion": true,
+    "no-shadowed-variable": true,
+    "no-sparse-arrays": true,
+    "no-string-throw": true,
+    "no-this-assignment": true,
+//    "no-unbound-method": [true, "ignore-static"],
+    "no-var-keyword": true,
+    "prefer-conditional-expression": true,
+    "prefer-object-spread": true,
+    "restrict-plus-operands": true,
+    "strict-boolean-expressions": false,
+    "strict-type-predicates": true,
+    "triple-equals": true,
+    "use-default-type-parameter": true,
+    "use-isnan": true,
+
+    // Maintainability
+    "cyclomatic-complexity": true,
+    "deprecation": true,
+    "eofline": true,
+    "indent": true,
+    "linebreak-style": true,
+    "no-default-export": true,
+    "prefer-const": true,
+    "trailing-comma": false,
+
+    // Style
+    "align": true,
+    "array-type": [true, "array"],
+    "arrow-return-shorthand": true,
+    "class-name": true,
+    "comment-format": [true, "check-space"],
+    "import-spacing": true,
+    "interface-over-type-literal": true,
+    "jsdoc-format": true,
+    "newline-before-return": true,
+    "new-parens": true,
+    "no-angle-bracket-type-assertion": true,
+    "no-boolean-literal-compare": true,
+    "no-reference-import": true,
+    "no-unnecessary-callback-wrapper": true,
+    "no-unnecessary-initializer": true,
+    "object-literal-key-quotes": [true, "consistent-as-needed"],
+    "prefer-method-signature": true,
+    "quotemark": [true, "double"],
+    "semicolon": true
+  }
+}

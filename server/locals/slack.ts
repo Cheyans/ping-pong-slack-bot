@@ -13,7 +13,7 @@ export class SlackWebClient extends WebClient {
     }
     const channel = this.channelNamesToInfo.get(channelName);
     if (!channel) {
-      throw new UnknownChannel(channelName)
+      throw new UnknownChannel(channelName);
     }
 
     return channel;
@@ -21,7 +21,8 @@ export class SlackWebClient extends WebClient {
 
   public async isUserInChannel(userId: string, channelName: ChannelName) {
     const channel = await this.getChannelInfo(channelName);
-    return channel.members.includes(userId)
+
+    return channel.members.includes(userId);
   }
 
   private async updateChannelNamesToInfo() {
@@ -40,6 +41,7 @@ export class SlackWebClient extends WebClient {
 }
 
 export class SlackRtmClient extends RtmClient {
+  private static AUTOMATIC_RECONNECT_TIME = 30;
   private webClient: SlackWebClient;
 
   constructor(token: string, webClient: SlackWebClient) {
@@ -60,7 +62,7 @@ export class SlackRtmClient extends RtmClient {
       } else {
         this.reconnect();
       }
-    }, 30 * 1000);
+    }, SlackRtmClient.AUTOMATIC_RECONNECT_TIME * 1000);
   }
 
   public async inviteToChannel(userId: string, userName: string, channelName: ChannelName) {

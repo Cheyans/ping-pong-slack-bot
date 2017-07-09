@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 import {Environment} from "./enums/environments";
 
-if (process.env.NODE_ENV != Environment.PRODUCTION && !require("containerized")()) {
+if (process.env.NODE_ENV !== Environment.PRODUCTION && !require("containerized")()) {
   require("dotenv").config();
 }
 
-import 'source-map-support/register'
+import "source-map-support/register";
 import {App, Settings} from "./app";
 import * as http from "http";
 import {normalizePort, onError, onListening} from "./utils/setupUtils";
 
 function startApp() {
   const settings: Settings = {
-    environment: <Environment>Environment[process.env.NODE_ENV as any || Environment.DEVELOPMENT],
+    environment: Environment[process.env.NODE_ENV as any || Environment.DEVELOPMENT] as Environment,
     port: normalizePort(process.env.PORT),
     slackCommandAccessToken: process.env.SLACK_COMMAND_ACCESS_TOKEN || "",
     slackBotAccessToken: process.env.SLACK_BOT_ACCESS_TOKEN || "",
@@ -25,8 +25,8 @@ function startApp() {
   const server = http.createServer(app.expressServer);
 
   server.listen(settings.port);
-  server.on('error', onError);
-  server.on('listening', () => onListening(server));
+  server.on("error", onError);
+  server.on("listening", () => onListening(server));
 }
 
 startApp();

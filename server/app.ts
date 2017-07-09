@@ -17,7 +17,7 @@ export class App {
     this.settings = settings;
 
     this.assignSettings();
-    this.initializeAppLocals().then();
+    this.initializeAppLocals();
     this.initializeRequestStack();
   }
 
@@ -26,10 +26,10 @@ export class App {
   }
 
   private assignSettings() {
-    this.app.set('port', this.settings.port);
+    this.app.set("port", this.settings.port);
   }
 
-  private async initializeAppLocals() {
+  private initializeAppLocals() {
     this.app.locals = new AppLocals(this.settings);
   }
 
@@ -50,11 +50,11 @@ export class App {
 }
 
 export interface Settings {
-  environment: Environment
-  port: number
-  slackCommandAccessToken: string
-  slackBotAccessToken: string
-  slackVerificationToken: string
-  slackTeamId: string
-  slackAppOwnerUsername: string
+  environment: Environment;
+  port: number;
+  slackCommandAccessToken: string;
+  slackBotAccessToken: string;
+  slackVerificationToken: string;
+  slackTeamId: string;
+  slackAppOwnerUsername: string;
 }

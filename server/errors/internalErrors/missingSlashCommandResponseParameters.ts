@@ -6,6 +6,6 @@ export class MissingSlashCommandResponseParameters extends InternalBaseError {
   token:${body.token}
   team_id:${body.team_id}
   user_id:${body.user_id}
-  user_name:${body.user_name}`)
+  user_name:${body.user_name}`);
   }
 }
