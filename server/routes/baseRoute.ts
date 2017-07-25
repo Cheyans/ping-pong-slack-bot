@@ -1,4 +1,5 @@
 import {Router} from "express";
+import {Constructor} from "../utils/types";
 const PromiseRouter = require("express-promise-router");
 
 export abstract class BaseRouteInstance {
@@ -6,7 +7,6 @@ export abstract class BaseRouteInstance {
 }
 
 
-export interface BaseRouteStatic {
+export interface BaseRouteStatic extends Constructor<BaseRouteInstance> {
   route: string;
-  new (...args: any[]): BaseRouteInstance;
 }

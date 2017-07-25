@@ -5,8 +5,9 @@ import * as bodyParser from "body-parser";
 import {errorHandler} from "./errors/middleware";
 import {errorLogger, requestLogger} from "./libs/logger";
 import {AppLocals} from "./locals/appLocals";
-import {SlackCallbackRoute} from "./routes/slackCallback";
+import {SlackCallbackRoute} from "./routes/slackRoute";
 import {Environment} from "./enums/environments";
+import {parseSlackResponse, verifySlackCallback} from "./libs/auth";
 
 export class App {
   private app: express.Application;
@@ -38,10 +39,13 @@ export class App {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({extended: false}));
     this.app.use(cookieParser());
+    this.app.use(parseSlackResponse);
     this.app.use(requestLogger);
 
     // ROUTES
-    this.app.use(SlackCallbackRoute.route, new SlackCallbackRoute().router);
+    this.app.use(SlackCallbackRoute.route,
+      verifySlackCallback,
+      new SlackCallbackRoute(this.app.settings).router);
 
     // ERROR MIDDLEWARE
     this.app.use(errorLogger);
@@ -52,7 +56,7 @@ export class App {
 export interface Settings {
   environment: Environment;
   port: number;
-  slackCommandAccessToken: string;
+  slackWebAccessToken: string;
   slackBotAccessToken: string;
   slackVerificationToken: string;
   slackTeamId: string;

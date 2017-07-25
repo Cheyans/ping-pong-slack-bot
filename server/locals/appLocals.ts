@@ -1,12 +1,12 @@
 import {Settings} from "../app";
-import {SlackRtmClient, SlackWebClient} from "./slack";
+import {SlackBot} from "./slack/slackBot";
 import {PlayerStore} from "./playerStore";
+import {logger} from "../libs/logger";
+import {Player} from "../models/player";
 
 export class AppLocals {
-  public slackWebClient: SlackWebClient;
-  public slackRtmClient: SlackRtmClient;
+  public slack: SlackBot;
   public players: PlayerStore;
-
   public settings: Settings;
 
   constructor(settings: Settings) {
@@ -16,10 +16,8 @@ export class AppLocals {
   }
 
   private initializeSlack() {
-    this.slackWebClient = new SlackWebClient(this.settings.slackCommandAccessToken);
-    this.slackRtmClient = new SlackRtmClient(this.settings.slackBotAccessToken, this.slackWebClient);
-    this.slackRtmClient.start();
-    this.slackRtmClient.startAutomaticReconnect();
+    this.slack = new SlackBot(this.settings.slackBotAccessToken, this.settings.slackWebAccessToken);
+    this.slack.startWithAutomaticReconnect();
   }
 
   private initializeGameObjects() {

@@ -11,14 +11,39 @@ import * as http from "http";
 import {normalizePort, onError, onListening} from "./utils/setupUtils";
 
 function startApp() {
+  const {
+    NODE_ENV,
+    PORT,
+    SLACK_WEB_ACCESS_TOKEN,
+    SLACK_BOT_ACCESS_TOKEN,
+    SLACK_VERIFICATION_TOKEN,
+    SLACK_TEAM_ID,
+    SLACK_APP_OWNER_USERNAME
+  } = process.env;
+
+  if (!SLACK_WEB_ACCESS_TOKEN) {
+    throw new Error("Missing SLACK_WEB_ACCESS_TOKEN");
+  } else if (!SLACK_BOT_ACCESS_TOKEN) {
+    throw new Error("Missing SLACK_BOT_ACCESS_TOKEN");
+  } else if (!SLACK_VERIFICATION_TOKEN) {
+    throw new Error("Missing SLACK_VERIFICATION_TOKEN");
+  } else if (!SLACK_TEAM_ID) {
+    throw new Error("Missing SLACK_TEAM_ID");
+  } else if (!SLACK_APP_OWNER_USERNAME) {
+    throw new Error("Missing SLACK_APP_OWNER_USERNAME");
+  }
+
+  const environment = NODE_ENV ? Environment.DEVELOPMENT : Environment[NODE_ENV as any] as Environment;
+  const port = normalizePort(PORT);
+
   const settings: Settings = {
-    environment: Environment[process.env.NODE_ENV as any || Environment.DEVELOPMENT] as Environment,
-    port: normalizePort(process.env.PORT),
-    slackCommandAccessToken: process.env.SLACK_COMMAND_ACCESS_TOKEN || "",
-    slackBotAccessToken: process.env.SLACK_BOT_ACCESS_TOKEN || "",
-    slackVerificationToken: process.env.SLACK_VERIFICATION_TOKEN || "",
-    slackTeamId: process.env.SLACK_TEAM_ID || "",
-    slackAppOwnerUsername: process.env.SLACK_APP_OWNER_USERNAME || ""
+    environment,
+    port,
+    slackWebAccessToken: SLACK_WEB_ACCESS_TOKEN,
+    slackBotAccessToken: SLACK_BOT_ACCESS_TOKEN,
+    slackVerificationToken: SLACK_VERIFICATION_TOKEN,
+    slackTeamId: SLACK_TEAM_ID,
+    slackAppOwnerUsername: SLACK_APP_OWNER_USERNAME
   };
 
   const app = new App(settings);

@@ -21,7 +21,7 @@
     "no-unnecessary-type-assertion": true,
     "no-var-requires": false,
     "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
-    "promise-function-async": true,
+    "promise-function-async": {"options": true, "severity": "warning"},
     "unified-signatures": true,
 
     // Functionality
@@ -38,7 +38,7 @@
     "no-invalid-template-strings": true,
     "no-invalid-this": true,
     "no-misused-new": true,
-    "no-object-literal-type-assertion": true,
+    "no-object-literal-type-assertion": false,
     "no-shadowed-variable": true,
     "no-sparse-arrays": true,
     "no-string-throw": true,
@@ -48,7 +48,7 @@
     "prefer-conditional-expression": true,
     "prefer-object-spread": true,
     "restrict-plus-operands": true,
-    "strict-boolean-expressions": false,
+    "strict-boolean-expressions": [true, "allow-undefined-union", "allow-mix", "allow-string"],
     "strict-type-predicates": true,
     "triple-equals": true,
     "use-default-type-parameter": true,

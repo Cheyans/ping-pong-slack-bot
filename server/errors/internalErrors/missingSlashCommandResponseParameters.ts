@@ -1,11 +1,11 @@
 import {InternalBaseError} from "./internalBaseError";
 
 export class MissingSlashCommandResponseParameters extends InternalBaseError {
-  constructor(body: any){
+  constructor(token: string, teamId: string, userId: string, userName: string){
     super(`Missing parameter:
-  token:${body.token}
-  team_id:${body.team_id}
-  user_id:${body.user_id}
-  user_name:${body.user_name}`);
+  token:${token}
+  team_id:${teamId}
+  user_id:${userId}
+  user_name:${userName}`);
   }
 }
